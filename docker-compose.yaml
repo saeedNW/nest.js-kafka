@@ -1,0 +1,29 @@
+services:
+  # Zookeeper service configuration
+  # Zookeeper is a centralized service for maintaining configuration information,
+  #naming, providing distributed synchronization, and providing group services.
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181 # Port for client connections
+      ZOOKEEPER_TICK_TIME: 2000 # Basic time unit in milliseconds used by ZooKeeper
+    ports:
+      - 2181:2181 # Expose port 2181
+
+  # Kafka service configuration
+  # This service sets up a Kafka broker for message streaming.
+  # It includes settings for the Kafka broker such as ports, environment variables, and dependencies.
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper # Kafka depends on ZooKeeper
+    ports:
+      - 9092:9092 # Expose port 9092
+      - 29092:29092 # Expose port 29092
+    environment:
+      KAFKA_BROKER_ID: 1 # Unique ID for the broker
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181 # Connect to ZooKeeper
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092 # Listeners for Kafka
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT # Security protocol map
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT # Listener name for inter-broker communication
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1 # Replication factor for offsets topic
