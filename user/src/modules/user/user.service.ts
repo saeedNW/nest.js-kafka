@@ -71,10 +71,8 @@ export class UserService {
 	async findAll(
 		paginationDto: IPaginationDto
 	): Promise<PaginatedResult<UserDocument>> {
-		//@ts-ignore
-		return await paginate(
+		return paginate<UserDocument>(
 			paginationDto,
-			//@ts-ignore
 			this.userModel,
 			{},
 			`${process.env.CORE_APPLICATION_URL}/user/find-all`
